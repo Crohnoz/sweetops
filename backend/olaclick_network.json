@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://isiscakes.ola.click/products",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8"
+  },
+  {
+    "url": "https://www.google.com/ccm/collect?rcb=11&frm=0&ae=g&auid=1762166217.1779338288&dt=Isis%20cakes%20-%20Pide%20en%20l%C3%ADnea.%20Men%C3%BA%2C%20Precios%20y%20Tel%C3%A9fonos.&en=page_view&dl=https%3A%2F%2Fisiscakes.ola.click%2Fproducts&scrsrc=www.googletagmanager.com&rnd=366589161.1779338288&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He65j1v9195497605za200zd9195497605xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115938466~115938468~118131809&apve=1&apvf=f&apvc=1&tft=1779338287831&tfd=1204",
+    "status": 200,
+    "content_type": ""
+  },
+  {
+    "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-QDLZQVXZ94&gtm=45je65j1v9206525486z89195497605za20gzb9195497605zd9195497605&_p=1779338287650&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=1910870272.1779338288&frm=0&pscdl=noapi&rcb=0&sr=1280x720&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=en-us&_s=1&tag_exp=0~115938466~115938468&sid=1779338288&sct=1&seg=0&dl=https%3A%2F%2Fisiscakes.ola.click%2Fproducts&dt=Isis%20cakes%20-%20Pide%20en%20l%C3%ADnea.%20Men%C3%BA%2C%20Precios%20y%20Tel%C3%A9fonos.&_tu=AAg&en=page_view&_fv=1&_nsi=1&_ss=1&tfd=1409",
+    "status": 204,
+    "content_type": "text/plain"
+  },
+  {
+    "url": "https://api.olaclick.app/ms-orders/public/companies/13610cf0-3bed-11ec-ba95-bba0d5df8115/coupons",
+    "status": 200,
+    "content_type": "application/json"
+  },
+  {
+    "url": "https://api.olaclick.app/ms-clients/public/companies/13610cf0-3bed-11ec-ba95-bba0d5df8115/loyalty-settings",
+    "status": 200,
+    "content_type": "application/json"
+  },
+  {
+    "url": "https://api.olaclick.app/ms-reports/public/company-visit?company_id=13610cf0-3bed-11ec-ba95-bba0d5df8115&date=2026-05-21",
+    "status": 200,
+    "content_type": "application/json"
+  },
+  {
+    "url": "https://api.olaclick.app/ms-products/public/companies/13610cf0-3bed-11ec-ba95-bba0d5df8115/categories",
+    "status": 200,
+    "content_type": "application/json"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/150/6262bd7b-0bea-44d7-a5db-663261ffa7f6.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/150/956148f6-54c2-4bfc-b64d-369b60ed9f82.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/150/6803aca8-840d-4648-b491-a7a015e46176.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/150/2c32a56e-8f97-4a5d-b936-14f55e5ad978.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/800/6803aca8-840d-4648-b491-a7a015e46176.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/800/6262bd7b-0bea-44d7-a5db-663261ffa7f6.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/800/2c32a56e-8f97-4a5d-b936-14f55e5ad978.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/800/956148f6-54c2-4bfc-b64d-369b60ed9f82.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/150/9663c959-b3ad-47ae-9fc8-1ae0d3677b99.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://d2nagnwby8accc.cloudfront.net/companies/products/images/150/9d148947-9366-428f-b506-1b0377fa1dc7.webp",
+    "status": 200,
+    "content_type": "image/webp"
+  },
+  {
+    "url": "https://us-central1-adsmovil-data-providers.cloudfunctions.net/id5?id5uid=ID5*kysHlc6E2PFXZq4_eJ66bj2K6ysp264_eJ66bj2K6yv__2oOjDFaAQEBCmoOjDEAruysq7AnbgV347iFkG2Vnw&referrer=https%3A%2F%2Fisiscakes.ola.click%2Fproducts&puid=&partner=olaclick&amid=4b17c769-83cb-4613-8aa1-5dbd387cdfd8&event_id=&params={%224%22:%22olaclick%22,%227%22:{%22amid%22:%224b17c769-83cb-4613-8aa1-5dbd387cdfd8%22,%22_gcl_au%22:%221.1.1762166217.1779338288%22,%22i18n_redirected%22:%22en%22},%228%22:%22https%3A%2F%2Fisiscakes.ola.click%2Fproducts%22,%229%22:%22isiscakes.ola.click%22,%2210%22:%22179.60.66.56%22,%2212%22:%22Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20HeadlessChrome/148.0.7778.96%20Safari/537.36%22,%22viewport%22:%22height=device-height,%20width=device-width,%20initial-scale=1,%20minimum-scale=1,%20maximum-scale=1,%20user-scalable=no%22,%22google%22:%22notranslate%22,%22keywords%22:%22carta%20digital,%20carta%20de%20productos,%20mejores%20promociones,%20olaclick,%20olaClick,%20Olaclick,%20OlaClick%22,%22description%22:%22%C2%A1Consulta%20y%20Pide%20directo%20con%20nosotros!%22,%22amid%22:%224b17c769-83cb-4613-8aa1-5dbd387cdfd8%22,%22dataParams%22:{%22company%22:%22Isis%20cakes%22}}",
+    "status": 200,
+    "content_type": "image/png"
+  }
+]
