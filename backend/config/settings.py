@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'orders',
     'inventory',
     'commands',
+    'kitchen'
 ]
 
 MIDDLEWARE = [

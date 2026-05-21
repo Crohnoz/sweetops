@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SweetOps - {{ sector }}</title>
+</head>
+<body>
+    <h1>Sector: {{ sector }}</h1>
+
+    {% for ticket in tickets %}
+        <h2>Pedido #{{ ticket.order.id }}</h2>
+        <p>Estado: {{ ticket.get_status_display }}</p>
+
+        <ul>
+            {% for item in ticket.order.items.all %}
+                {% if item.sector_snapshot == sector %}
+                    <li>{{ item.quantity }} x {{ item.product.name }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% empty %}
+        <p>No hay comandas.</p>
+    {% endfor %}
+</body>
+</html>
