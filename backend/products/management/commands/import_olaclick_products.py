@@ -1,30 +1,87 @@
 import json
+import re
+
 from pathlib import Path
 
 from django.core.management.base import BaseCommand
+from django.db.models import Count
 
 from products.models import Product
 
 
+FAVORITE_WORDS = [
+    "americano",
+    "latte",
+    "capuchino",
+    "cappuccino",
+    "espresso",
+    "waffle",
+    "frappe",
+    "frappé",
+    "cupcake",
+    "sandwich",
+    "sándwich",
+]
+
+
 def product_has_field(field_name):
-    return any(field.name == field_name for field in Product._meta.fields)
+    return any(
+        field.name == field_name
+        for field in Product._meta.fields
+    )
+
+
+def clean_name(name):
+    if not name:
+        return ""
+
+    name = name.strip()
+    name = re.sub(r"\s+", " ", name)
+
+    return name
 
 
 def detect_sector(category_name, product_name):
     text = f"{category_name} {product_name}".lower()
 
     cafeteria_words = [
-        "café", "cafe", "latte", "capuchino", "cappuccino",
-        "mocaccino", "espresso", "té", "te", "milkshake",
-        "frappe", "frappé", "jugo", "limonada", "bebida",
-        "agua", "redbull"
+        "café",
+        "cafe",
+        "latte",
+        "capuchino",
+        "cappuccino",
+        "mocaccino",
+        "espresso",
+        "té",
+        "te",
+        "milkshake",
+        "frappe",
+        "frappé",
+        "jugo",
+        "limonada",
+        "bebida",
+        "agua",
+        "redbull",
     ]
 
     display_words = [
-        "sandwich", "sándwich", "vitrina", "cupcake", "torta",
-        "pie", "cheesecake", "kuchen", "alfajor", "waffle",
-        "helado", "dulce", "brownie", "postre", "cake pop",
-        "cuchufli", "promo", "promoción", "promocion"
+        "sandwich",
+        "sándwich",
+        "cupcake",
+        "torta",
+        "pie",
+        "cheesecake",
+        "kuchen",
+        "alfajor",
+        "waffle",
+        "helado",
+        "brownie",
+        "postre",
+        "cake pop",
+        "cuchufli",
+        "promo",
+        "promoción",
+        "promocion",
     ]
 
     if any(word in text for word in cafeteria_words):
@@ -39,37 +96,63 @@ def detect_sector(category_name, product_name):
 def detect_category(category_name, product_name):
     text = f"{category_name} {product_name}".lower()
 
-    if "waffle" in text:
-        return "waffle"
+    mapping = {
+        "waffle": "waffle",
+        "cupcake": "cupcake",
+        "frappe": "frappe",
+        "frappé": "frappe",
+        "milkshake": "frappe",
+        "helado": "icecream",
+        "ice cream": "icecream",
+        "torta": "cake",
+        "cake": "cake",
+        "promo": "promo",
+        "promoción": "promo",
+        "promocion": "promo",
+    }
 
-    if "cupcake" in text:
-        return "cupcake"
+    for key, value in mapping.items():
+        if key in text:
+            return value
 
-    if any(word in text for word in [
-        "café", "cafe", "latte", "capuchino", "cappuccino",
-        "mocaccino", "espresso", "té", "te"
-    ]):
+    coffee_words = [
+        "café",
+        "cafe",
+        "latte",
+        "capuchino",
+        "cappuccino",
+        "mocaccino",
+        "espresso",
+        "té",
+        "te",
+    ]
+
+    if any(word in text for word in coffee_words):
         return "coffee"
 
-    if any(word in text for word in ["frappe", "frappé", "milkshake"]):
-        return "frappe"
+    drink_words = [
+        "jugo",
+        "limonada",
+        "bebida",
+        "agua",
+        "redbull",
+    ]
 
-    if any(word in text for word in ["helado", "ice cream"]):
-        return "icecream"
-
-    if any(word in text for word in ["torta", "cake"]):
-        return "cake"
-
-    if any(word in text for word in ["promo", "promoción", "promocion"]):
-        return "promo"
-
-    if any(word in text for word in ["jugo", "limonada", "bebida", "agua", "redbull"]):
+    if any(word in text for word in drink_words):
         return "drink"
 
-    if any(word in text for word in [
-        "pie", "cheesecake", "kuchen", "alfajor", "dulce",
-        "brownie", "postre", "cake pop", "cuchufli"
-    ]):
+    dessert_words = [
+        "pie",
+        "cheesecake",
+        "kuchen",
+        "alfajor",
+        "brownie",
+        "postre",
+        "cake pop",
+        "cuchufli",
+    ]
+
+    if any(word in text for word in dessert_words):
         return "dessert"
 
     return "other"
@@ -90,22 +173,38 @@ def get_image_url(item):
     )
 
 
-def find_existing_product(name, olaclick_id, has_olaclick_id):
-    if has_olaclick_id and olaclick_id:
-        product = Product.objects.filter(
-            olaclick_id=olaclick_id
-        ).first()
+def is_favorite(name):
+    text = name.lower()
 
-        if product:
-            return product
+    return any(
+        word in text
+        for word in FAVORITE_WORDS
+    )
 
-    return Product.objects.filter(
-        name__iexact=name
-    ).first()
+
+def get_product_score(product):
+    score = 0
+
+    if product.image_url:
+        score += 100
+
+    if product.olaclick_id:
+        score += 80
+
+    if product.is_available:
+        score += 40
+
+    if product.price and product.price > 0:
+        score += 20
+
+    if product.description:
+        score += 10
+
+    return score
 
 
 class Command(BaseCommand):
-    help = "Importa productos desde olaclick_products.json evitando duplicados"
+    help = "Importa productos OlaClick de forma inteligente y evita duplicados"
 
     def handle(self, *args, **options):
         file_path = Path("olaclick_products.json")
@@ -120,6 +219,7 @@ class Command(BaseCommand):
 
         has_image_url = product_has_field("image_url")
         has_olaclick_id = product_has_field("olaclick_id")
+        has_is_favorite = product_has_field("is_favorite")
 
         with file_path.open("r", encoding="utf-8") as file:
             payload = json.load(file)
@@ -129,39 +229,49 @@ class Command(BaseCommand):
         created = 0
         updated = 0
         skipped = 0
-        without_image = 0
+        disabled_duplicates = 0
+        deleted_duplicates = 0
+
+        imported_names = set()
 
         for category in categories:
             category_name = category.get("name", "Sin categoría")
             products = category.get("products", [])
 
             for item in products:
-                name = (item.get("name") or "").strip()
+                name = clean_name(item.get("name"))
                 olaclick_id = item.get("id")
 
                 if not name:
                     skipped += 1
                     continue
 
+                normalized_name = name.lower()
+
+                if normalized_name in imported_names:
+                    skipped += 1
+                    continue
+
+                imported_names.add(normalized_name)
+
                 variants = item.get("product_variants", [])
                 first_variant = variants[0] if variants else {}
 
                 price = first_variant.get("price") or 0
+
+                if price <= 0:
+                    skipped += 1
+                    continue
+
                 stock = first_variant.get("stock") or 0
                 minimum_stock = first_variant.get("stock_threshold") or 5
-
-                product_category = detect_category(category_name, name)
-                sector = detect_sector(category_name, name)
                 image_url = get_image_url(item)
 
-                if not image_url:
-                    without_image += 1
-
                 defaults = {
-                    "category": product_category,
+                    "category": detect_category(category_name, name),
                     "description": item.get("description") or "",
                     "price": price,
-                    "sector": sector,
+                    "sector": detect_sector(category_name, name),
                     "stock": stock,
                     "minimum_stock": minimum_stock,
                     "is_available": item.get("visible", True),
@@ -170,22 +280,34 @@ class Command(BaseCommand):
                 if has_image_url:
                     defaults["image_url"] = image_url
 
-                existing_product = find_existing_product(
-                    name=name,
-                    olaclick_id=olaclick_id,
-                    has_olaclick_id=has_olaclick_id,
-                )
+                if has_is_favorite:
+                    defaults["is_favorite"] = is_favorite(name)
 
-                if existing_product:
+                existing = None
+
+                if has_olaclick_id and olaclick_id:
+                    existing = Product.objects.filter(
+                        olaclick_id=olaclick_id
+                    ).first()
+
+                if not existing:
+                    existing = Product.objects.filter(
+                        name__iexact=name
+                    ).first()
+
+                if existing:
                     for key, value in defaults.items():
-                        setattr(existing_product, key, value)
+                        if key == "image_url" and existing.image_url and not value:
+                            continue
 
-                    existing_product.name = name
+                        setattr(existing, key, value)
+
+                    existing.name = name
 
                     if has_olaclick_id:
-                        existing_product.olaclick_id = olaclick_id
+                        existing.olaclick_id = olaclick_id
 
-                    existing_product.save()
+                    existing.save()
 
                     updated += 1
 
@@ -202,22 +324,47 @@ class Command(BaseCommand):
 
                     created += 1
 
-        self.stdout.write(self.style.SUCCESS("Importación completada"))
+        duplicates = (
+            Product.objects
+            .values("name")
+            .annotate(total=Count("id"))
+            .filter(total__gt=1)
+        )
+
+        for duplicate in duplicates:
+            duplicated_products = list(
+                Product.objects.filter(
+                    name=duplicate["name"]
+                )
+            )
+
+            if len(duplicated_products) <= 1:
+                continue
+
+            keep = sorted(
+                duplicated_products,
+                key=get_product_score,
+                reverse=True,
+            )[0]
+
+            for product in duplicated_products:
+                if product.id == keep.id:
+                    continue
+
+                if product.orderitem_set.exists():
+                    product.is_available = False
+                    product.save(update_fields=["is_available"])
+                    disabled_duplicates += 1
+                else:
+                    product.delete()
+                    deleted_duplicates += 1
+
+        self.stdout.write(
+            self.style.SUCCESS("Importación completada")
+        )
+
         self.stdout.write(f"Creados: {created}")
         self.stdout.write(f"Actualizados: {updated}")
         self.stdout.write(f"Omitidos: {skipped}")
-        self.stdout.write(f"Sin imagen desde OlaClick: {without_image}")
-
-        if not has_image_url:
-            self.stdout.write(
-                self.style.WARNING(
-                    "Aviso: Product aún no tiene campo image_url. Se importó sin imágenes."
-                )
-            )
-
-        if not has_olaclick_id:
-            self.stdout.write(
-                self.style.WARNING(
-                    "Aviso: Product aún no tiene campo olaclick_id. Se usó name como identificador."
-                )
-            )
+        self.stdout.write(f"Duplicados desactivados por tener pedidos: {disabled_duplicates}")
+        self.stdout.write(f"Duplicados eliminados: {deleted_duplicates}")

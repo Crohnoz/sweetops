@@ -5,7 +5,9 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #0f172a;
+    background:
+        radial-gradient(circle at top left, rgba(255, 216, 77, 0.08), transparent 32%),
+        #0f172a;
     color: white;
 }
 
@@ -89,10 +91,10 @@ h1 {
 }
 
 .card {
-    background: #1e293b;
+    background: linear-gradient(180deg, #1e293b 0%, #172033 100%);
     border-radius: 18px;
     overflow: hidden;
-    border: 2px solid transparent;
+    border: 1px solid rgba(255,255,255,0.07);
     transition: 0.15s ease;
     position: relative;
     cursor: pointer;
@@ -100,21 +102,21 @@ h1 {
 
 .card:hover {
     transform: translateY(-2px);
-    border-color: rgba(255,255,255,0.16);
+    border-color: rgba(255,255,255,0.18);
 }
 
 .card.selected {
     border-color: #22c55e;
     transform: scale(1.01);
-    box-shadow: 0 0 0 2px rgba(34,197,94,0.15);
+    box-shadow: 0 0 0 2px rgba(34,197,94,0.18);
 }
 
 .card.favorite {
-    border-color: rgba(255,216,77,0.35);
+    border-color: rgba(255,216,77,0.38);
 }
 
 .image-container {
-    height: 115px;
+    height: 118px;
     background: #0f172a;
     display: flex;
     align-items: center;
@@ -130,14 +132,53 @@ h1 {
 }
 
 .emoji-fallback {
-    font-size: 52px;
-    opacity: 0.85;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #172554, #1e293b);
+    font-size: 52px;
+    opacity: 0.95;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.fallback-coffee {
+    background: linear-gradient(135deg, #3b2416, #7c4a24);
+}
+
+.fallback-waffle {
+    background: linear-gradient(135deg, #92400e, #f59e0b);
+}
+
+.fallback-cupcake {
+    background: linear-gradient(135deg, #831843, #ec4899);
+}
+
+.fallback-cake {
+    background: linear-gradient(135deg, #4c1d95, #8b5cf6);
+}
+
+.fallback-dessert {
+    background: linear-gradient(135deg, #5b21b6, #a855f7);
+}
+
+.fallback-icecream {
+    background: linear-gradient(135deg, #0e7490, #67e8f9);
+}
+
+.fallback-frappe {
+    background: linear-gradient(135deg, #78350f, #d97706);
+}
+
+.fallback-drink {
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+}
+
+.fallback-promo {
+    background: linear-gradient(135deg, #991b1b, #f97316);
+}
+
+.fallback-other {
+    background: linear-gradient(135deg, #334155, #64748b);
 }
 
 .favorite-badge {

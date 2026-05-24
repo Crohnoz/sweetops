@@ -2,110 +2,442 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>SweetOps - {{ sector }}</title>
-    <meta http-equiv="refresh" content="20">
+
+    <meta
+        http-equiv="refresh"
+        content="20"
+    >
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>SweetOps - {{ sector|upper }}</title>
+
     <style>
-        body { margin: 0; background: #111; color: white; font-family: Arial, sans-serif; }
-        header { padding: 24px 32px; background: #1f1f1f; border-bottom: 1px solid #333; }
-        h1 { margin: 0; color: #ffd84d; }
-        main { padding: 32px; display: grid; gap: 20px; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(255,216,77,0.08), transparent 30%),
+                #0f172a;
+            color: white;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 22px 30px;
+            background: rgba(15, 23, 42, 0.96);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        h1 {
+            margin: 0;
+            color: #ffd84d;
+            font-size: 38px;
+        }
+
+        .subtitle {
+            margin-top: 6px;
+            color: #cbd5e1;
+            font-size: 15px;
+        }
 
         .header-actions {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
-            margin-top: 12px;
+            margin-top: 16px;
         }
 
-        .ticket { background: #202020; border-radius: 18px; padding: 24px; border-left: 12px solid #777; }
-        .pending { border-left-color: #f59e0b; }
-        .in_progress { border-left-color: #38bdf8; }
-        .ready { border-left-color: #22c55e; }
-
-        .ticket h2 { margin-top: 0; font-size: 28px; }
-        .status { font-weight: bold; margin-bottom: 16px; }
-        .items { font-size: 22px; line-height: 1.7; }
-        .actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
-
-        button, .back {
+        .back,
+        .history {
             border: none;
-            border-radius: 10px;
-            padding: 14px 18px;
+            border-radius: 12px;
+            padding: 12px 16px;
             color: white;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             text-decoration: none;
+            display: inline-block;
+            background: #334155;
         }
 
-        .progress { background: #2563eb; }
-        .ready-btn { background: #16a34a; }
-        .delivered { background: #6b7280; }
-        .back { background: #374151; display: inline-block; }
-        .history { background: #7c3aed; display: inline-block; }
+        .history {
+            background: #7c3aed;
+        }
 
-        .empty { font-size: 26px; color: #ccc; }
+        main {
+            padding: 28px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .ticket {
+            background: linear-gradient(180deg, #1e293b, #111827);
+            border-radius: 22px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.28);
+        }
+
+        .ticket.pending {
+            border-top: 8px solid #f59e0b;
+        }
+
+        .ticket.in_progress {
+            border-top: 8px solid #38bdf8;
+        }
+
+        .ticket.ready {
+            border-top: 8px solid #22c55e;
+        }
+
+        .ticket-header {
+            padding: 22px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .ticket-title-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .ticket h2 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .customer {
+            margin-top: 8px;
+            color: #cbd5e1;
+            font-size: 15px;
+        }
+
+        .status-badge {
+            white-space: nowrap;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #854d0e;
+            color: #fde68a;
+        }
+
+        .status-in_progress {
+            background: #075985;
+            color: #bae6fd;
+        }
+
+        .status-ready {
+            background: #14532d;
+            color: #bbf7d0;
+        }
 
         .meta {
-            color: #aaa;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 16px;
+            color: #94a3b8;
             font-size: 14px;
-            margin-bottom: 14px;
+        }
+
+        .items {
+            padding: 22px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.05);
+            font-size: 20px;
+        }
+
+        .item-name {
+            line-height: 1.25;
+        }
+
+        .item-qty {
+            min-width: 48px;
+            text-align: center;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: rgba(255,216,77,0.14);
+            color: #ffd84d;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            padding: 0 22px 22px;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            border-radius: 14px;
+            padding: 16px 18px;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .progress {
+            background: #2563eb;
+        }
+
+        .ready-btn {
+            background: #16a34a;
+        }
+
+        .delivered {
+            background: #475569;
+        }
+
+        .empty {
+            margin: 40px auto;
+            max-width: 620px;
+            padding: 34px;
+            border-radius: 24px;
+            text-align: center;
+            background: rgba(255,255,255,0.05);
+            color: #cbd5e1;
+            font-size: 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 12px;
+        }
+
+        @media (min-width: 900px) {
+            .actions {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 20px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .board {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket h2 {
+                font-size: 26px;
+            }
+
+            .item {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <header>
-        <h1>Sector: {{ sector|upper }}</h1>
 
-        <div class="header-actions">
-            <a class="back" href="/kitchen/">Volver al panel</a>
-            <a class="history" href="/kitchen/sector/{{ sector }}/history/">Ver historial</a>
+<header>
+    <h1>
+        Sector: {{ sector|upper }}
+    </h1>
+
+    <div class="subtitle">
+        Pantalla operacional de comandas activas · actualización cada 20 segundos
+    </div>
+
+    <div class="header-actions">
+        <a class="back" href="/kitchen/">
+            ← Volver al panel
+        </a>
+
+        <a class="history" href="/kitchen/sector/{{ sector }}/history/">
+            Ver historial
+        </a>
+    </div>
+</header>
+
+<main>
+    {% if tickets %}
+
+        <section class="board">
+
+            {% for ticket in tickets %}
+
+                <article class="ticket {{ ticket.status }}">
+
+                    <div class="ticket-header">
+
+                        <div class="ticket-title-row">
+
+                            <div>
+                                <h2>
+                                    Pedido #{{ ticket.order.id }}
+                                </h2>
+
+                                <div class="customer">
+                                    {{ ticket.order.customer_name|default:"Pedido rápido" }}
+                                </div>
+                            </div>
+
+                            <div class="status-badge status-{{ ticket.status }}">
+                                {{ ticket.get_status_display }}
+                            </div>
+
+                        </div>
+
+                        <div class="meta">
+                            <span>
+                                Creado: {{ ticket.created_at|date:"d/m/Y H:i" }}
+                            </span>
+
+                            <span>
+                                Total pedido: ${{ ticket.order.total }}
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="items">
+
+                        {% for item in ticket.order.items.all %}
+
+                            {% if item.sector_snapshot == sector %}
+
+                                <div class="item">
+
+                                    <div class="item-name">
+                                        {{ item.product.name }}
+                                    </div>
+
+                                    <div class="item-qty">
+                                        x{{ item.quantity }}
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="actions">
+
+                        <form method="post" action="/kitchen/ticket/{{ ticket.id }}/status/">
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="status"
+                                value="in_progress"
+                            >
+
+                            <button
+                                class="progress"
+                                type="submit"
+                            >
+                                En preparación
+                            </button>
+                        </form>
+
+                        <form method="post" action="/kitchen/ticket/{{ ticket.id }}/status/">
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="status"
+                                value="ready"
+                            >
+
+                            <button
+                                class="ready-btn"
+                                type="submit"
+                            >
+                                Listo
+                            </button>
+                        </form>
+
+                        <form method="post" action="/kitchen/ticket/{{ ticket.id }}/status/">
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="status"
+                                value="delivered"
+                            >
+
+                            <button
+                                class="delivered"
+                                type="submit"
+                            >
+                                Entregado
+                            </button>
+                        </form>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </section>
+
+    {% else %}
+
+        <div class="empty">
+            <div class="empty-icon">
+                ✅
+            </div>
+
+            No hay comandas activas para este sector.
         </div>
-    </header>
 
-    <main>
-        {% for ticket in tickets %}
-            <section class="ticket {{ ticket.status }}">
-                <h2>Pedido #{{ ticket.order.id }}</h2>
+    {% endif %}
+</main>
 
-                <div class="status">
-                    Estado: {{ ticket.get_status_display }}
-                </div>
-
-                <div class="meta">
-                    Creado: {{ ticket.created_at }}
-                </div>
-
-                <div class="items">
-                    {% for item in ticket.order.items.all %}
-                        {% if item.sector_snapshot == sector %}
-                            <div>{{ item.quantity }}x {{ item.product.name }}</div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-
-                <div class="actions">
-                    <form method="post" action="/kitchen/ticket/{{ ticket.id }}/status/">
-                        {% csrf_token %}
-                        <input type="hidden" name="status" value="in_progress">
-                        <button class="progress" type="submit">En preparación</button>
-                    </form>
-
-                    <form method="post" action="/kitchen/ticket/{{ ticket.id }}/status/">
-                        {% csrf_token %}
-                        <input type="hidden" name="status" value="ready">
-                        <button class="ready-btn" type="submit">Listo</button>
-                    </form>
-
-                    <form method="post" action="/kitchen/ticket/{{ ticket.id }}/status/">
-                        {% csrf_token %}
-                        <input type="hidden" name="status" value="delivered">
-                        <button class="delivered" type="submit">Entregado</button>
-                    </form>
-                </div>
-            </section>
-        {% empty %}
-            <p class="empty">No hay comandas activas para este sector.</p>
-        {% endfor %}
-    </main>
 </body>
 </html>

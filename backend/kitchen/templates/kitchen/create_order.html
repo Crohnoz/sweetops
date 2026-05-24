@@ -1,335 +1,28 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>SweetOps POS</title>
 
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #0f172a;
-            color: white;
-        }
-
-        header {
-            padding: 24px 32px;
-            background: #111827;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        h1 {
-            margin: 0;
-            color: #ffd84d;
-            font-size: 38px;
-        }
-
-        .back {
-            display: inline-block;
-            margin-top: 14px;
-            color: #cbd5e1;
-            text-decoration: none;
-        }
-
-        .filters {
-            padding: 24px 32px 12px;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 16px;
-        }
-
-        .search-input,
-        .sector-filter,
-        .client-input {
-            width: 100%;
-            padding: 16px;
-            border-radius: 14px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: #1e293b;
-            color: white;
-            font-size: 17px;
-        }
-
-        .categories {
-            padding: 0 32px 24px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .category-chip {
-            border: none;
-            padding: 12px 18px;
-            border-radius: 999px;
-            background: #1e293b;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .category-chip:hover,
-        .category-chip.active {
-            background: #2563eb;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-            padding: 0 32px 32px;
-        }
-
-        .products {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: #1e293b;
-            border-radius: 24px;
-            overflow: hidden;
-            border: 2px solid transparent;
-            transition: 0.2s ease;
-            position: relative;
-        }
-
-        .card.selected {
-            border-color: #22c55e;
-            transform: scale(1.01);
-        }
-
-        .card.favorite {
-            border-color: rgba(255,216,77,0.35);
-        }
-
-        .image-container {
-            height: 180px;
-            background: #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .emoji-fallback {
-            font-size: 72px;
-            opacity: 0.35;
-        }
-
-        .favorite-badge {
-            position: absolute;
-            top: 14px;
-            left: 14px;
-            background: rgba(255,216,77,0.95);
-            color: #111827;
-            padding: 6px 12px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .card-content {
-            padding: 18px;
-        }
-
-        .sector {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.08);
-            font-size: 12px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
-
-        .card h3 {
-            margin-top: 0;
-            font-size: 22px;
-            min-height: 55px;
-        }
-
-        .price {
-            color: #ffd84d;
-            font-size: 30px;
-            font-weight: bold;
-            margin-top: 16px;
-        }
-
-        .quantity-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-top: 22px;
-        }
-
-        .qty-btn {
-            width: 54px;
-            height: 54px;
-            border-radius: 14px;
-            border: none;
-            background: #334155;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .qty-btn:hover {
-            background: #475569;
-        }
-
-        .quantity-input {
-            width: 90px;
-            text-align: center;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            font-size: 22px;
-            background: #0f172a;
-            color: white;
-        }
-
-        .sidebar {
-            background: #111827;
-            border-radius: 24px;
-            padding: 24px;
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .sidebar h2 {
-            margin-top: 0;
-            font-size: 30px;
-        }
-
-        .field-label {
-            display: block;
-            margin-top: 18px;
-            margin-bottom: 10px;
-            color: #cbd5e1;
-            font-weight: bold;
-        }
-
-        .summary-box {
-            margin-top: 18px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 16px;
-            padding: 14px;
-        }
-
-        .summary-line {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .summary-line:last-child {
-            border-bottom: none;
-        }
-
-        .summary-total {
-            margin-top: 20px;
-            font-size: 34px;
-            font-weight: bold;
-            color: #ffd84d;
-        }
-
-        .notes {
-            width: 100%;
-            min-height: 120px;
-            border-radius: 14px;
-            border: none;
-            padding: 14px;
-            font-size: 15px;
-            background: #1e293b;
-            color: white;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 18px;
-            background: #22c55e;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 24px;
-        }
-
-        .submit-btn:hover {
-            background: #16a34a;
-        }
-
-        .submit-btn:disabled {
-            background: #475569;
-            cursor: not-allowed;
-        }
-
-        .empty-message {
-            display: none;
-            padding: 30px;
-            background: #1e293b;
-            border-radius: 20px;
-            font-size: 20px;
-            color: #cbd5e1;
-        }
-
-        @media (max-width: 1200px) {
-
-            .container {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                position: static;
-            }
-
-            .filters {
-                grid-template-columns: 1fr;
-            }
-        }
-
-    </style>
+    <link rel="stylesheet" href="{% static 'kitchen/css/pos.css' %}">
 </head>
+
 <body>
 
 <header>
-
     <h1>SweetOps POS</h1>
 
     <a class="back" href="/kitchen/">
         ← Volver al panel
     </a>
-
 </header>
 
 <form method="POST">
-
     {% csrf_token %}
 
-    <div class="filters">
-
+    <section class="filters">
         <input
             id="searchInput"
             class="search-input"
@@ -342,12 +35,11 @@
             <option value="all">Todos los sectores</option>
             <option value="cafeteria">☕ Cafetería</option>
             <option value="display">🧁 Display</option>
+            <option value="kitchen">🍳 Cocina</option>
         </select>
+    </section>
 
-    </div>
-
-    <div class="categories">
-
+    <section class="categories">
         <button type="button" class="category-chip active" data-category="all">
             ⭐ Todos
         </button>
@@ -368,69 +60,111 @@
             🧁 Cupcakes
         </button>
 
+        <button type="button" class="category-chip" data-category="cake">
+            🎂 Tortas
+        </button>
+
         <button type="button" class="category-chip" data-category="dessert">
             🍰 Postres
         </button>
 
-        <button type="button" class="category-chip" data-category="drink">
-            🥤 Bebidas
+        <button type="button" class="category-chip" data-category="icecream">
+            🍨 Helados
         </button>
 
-    </div>
+        <button type="button" class="category-chip" data-category="frappe">
+            🥤 Frappes
+        </button>
 
-    <div class="container">
+        <button type="button" class="category-chip" data-category="drink">
+            🧃 Bebidas
+        </button>
 
-        <div class="products" id="productsGrid">
+        <button type="button" class="category-chip" data-category="promo">
+            🏷️ Promos
+        </button>
+    </section>
+
+    <main class="container">
+
+        <section class="products" id="productsGrid">
 
             {% for product in products %}
 
-                <div
-                    class="card product-card {% if 'waffle' in product.name|lower or 'café' in product.name|lower or 'frappe' in product.name|lower %}favorite{% endif %}"
+                <article
+                    class="card product-card {% if product.category == 'coffee' or product.category == 'waffle' or product.category == 'frappe' or product.category == 'promo' %}favorite{% endif %}"
                     data-name="{{ product.name|lower }}"
                     data-sector="{{ product.sector|lower }}"
                     data-category="{{ product.category|lower }}"
                     data-price="{{ product.price }}"
-                    data-favorite="{% if 'waffle' in product.name|lower or 'café' in product.name|lower or 'frappe' in product.name|lower %}true{% else %}false{% endif %}"
+                    data-favorite="{% if product.category == 'coffee' or product.category == 'waffle' or product.category == 'frappe' or product.category == 'promo' %}true{% else %}false{% endif %}"
                 >
 
                     <div class="image-container">
-
                         {% if product.image_url %}
-
                             <img
                                 class="product-image"
                                 src="{{ product.image_url }}"
                                 alt="{{ product.name }}"
+                                loading="lazy"
                             >
-
                         {% else %}
-
-                            <div class="emoji-fallback">
-
+                            <div class="
+                                emoji-fallback
+                                {% if product.category == 'coffee' %}
+                                    fallback-coffee
+                                {% elif product.category == 'waffle' %}
+                                    fallback-waffle
+                                {% elif product.category == 'cupcake' %}
+                                    fallback-cupcake
+                                {% elif product.category == 'cake' %}
+                                    fallback-cake
+                                {% elif product.category == 'dessert' %}
+                                    fallback-dessert
+                                {% elif product.category == 'icecream' %}
+                                    fallback-icecream
+                                {% elif product.category == 'frappe' %}
+                                    fallback-frappe
+                                {% elif product.category == 'drink' %}
+                                    fallback-drink
+                                {% elif product.category == 'promo' %}
+                                    fallback-promo
+                                {% else %}
+                                    fallback-other
+                                {% endif %}
+                            ">
                                 {% if product.category == "coffee" %}
                                     ☕
-                                {% elif product.category == "cupcake" %}
-                                    🧁
                                 {% elif product.category == "waffle" %}
                                     🧇
-                                {% else %}
+                                {% elif product.category == "cupcake" %}
+                                    🧁
+                                {% elif product.category == "cake" %}
+                                    🎂
+                                {% elif product.category == "dessert" %}
                                     🍰
+                                {% elif product.category == "icecream" %}
+                                    🍨
+                                {% elif product.category == "frappe" %}
+                                    🥤
+                                {% elif product.category == "drink" %}
+                                    🧃
+                                {% elif product.category == "promo" %}
+                                    🏷️
+                                {% else %}
+                                    🍽️
                                 {% endif %}
-
                             </div>
-
                         {% endif %}
 
-                        {% if 'waffle' in product.name|lower or 'café' in product.name|lower or 'frappe' in product.name|lower %}
+                        {% if product.category == 'coffee' or product.category == 'waffle' or product.category == 'frappe' or product.category == 'promo' %}
                             <div class="favorite-badge">
                                 FAVORITO
                             </div>
                         {% endif %}
-
                     </div>
 
                     <div class="card-content">
-
                         <div class="sector">
                             {{ product.get_category_display }}
                         </div>
@@ -442,11 +176,7 @@
                         </div>
 
                         <div class="quantity-box">
-
-                            <button
-                                class="qty-btn minus-btn"
-                                type="button"
-                            >
+                            <button class="qty-btn minus-btn" type="button">
                                 −
                             </button>
 
@@ -460,18 +190,13 @@
                                 data-price="{{ product.price }}"
                             >
 
-                            <button
-                                class="qty-btn plus-btn"
-                                type="button"
-                            >
+                            <button class="qty-btn plus-btn" type="button">
                                 +
                             </button>
-
                         </div>
-
                     </div>
 
-                </div>
+                </article>
 
             {% endfor %}
 
@@ -479,10 +204,9 @@
                 No se encontraron productos.
             </div>
 
-        </div>
+        </section>
 
-        <div class="sidebar">
-
+        <aside class="sidebar">
             <h2>Resumen</h2>
 
             <label class="field-label">
@@ -494,10 +218,10 @@
                 type="text"
                 name="customer_name"
                 placeholder="Ej: Mesa 5"
+                autocomplete="off"
             >
 
             <div class="summary-box">
-
                 <div class="summary-line">
                     <span>Productos</span>
                     <strong id="selectedCount">0</strong>
@@ -511,17 +235,14 @@
                 <div class="summary-total">
                     $<span id="totalAmount">0</span>
                 </div>
-
             </div>
 
-            <div
-                id="selectedProductsList"
-                class="summary-box"
-            >
+            <div id="selectedProductsList" class="summary-box">
                 <div class="summary-line">
                     <span>Sin productos</span>
                 </div>
             </div>
+
             <button
                 class="clear-btn"
                 type="button"
@@ -548,229 +269,12 @@
             >
                 Selecciona productos
             </button>
+        </aside>
 
-        </div>
-
-    </div>
-
+    </main>
 </form>
 
-<script>
-
-    const searchInput = document.getElementById("searchInput");
-
-    const sectorFilter = document.getElementById("sectorFilter");
-
-    const categoryButtons = document.querySelectorAll(".category-chip");
-
-    const productCards = document.querySelectorAll(".product-card");
-
-    const selectedCount = document.getElementById("selectedCount");
-
-    const totalUnits = document.getElementById("totalUnits");
-
-    const totalAmount = document.getElementById("totalAmount");
-
-    const selectedProductsList = document.getElementById("selectedProductsList");
-
-    const submitButton = document.getElementById("submitButton");
-
-    const emptyMessage = document.getElementById("emptyMessage");
-
-    let activeCategory = "all";
-
-    function normalizeText(value) {
-
-        return value
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
-    }
-
-    function formatCLP(value) {
-
-        return Number(value).toLocaleString("es-CL");
-    }
-
-    function filterProducts() {
-
-        const search = normalizeText(searchInput.value);
-
-        const selectedSector = sectorFilter.value;
-
-        let visibleCount = 0;
-
-        productCards.forEach(card => {
-
-            const name = normalizeText(card.dataset.name);
-
-            const sector = normalizeText(card.dataset.sector);
-
-            const category = normalizeText(card.dataset.category);
-
-            const favorite = card.dataset.favorite === "true";
-
-            const matchesSearch = name.includes(search);
-
-            const matchesSector =
-                selectedSector === "all"
-                || sector === selectedSector;
-
-            let matchesCategory = true;
-
-            if (activeCategory === "favorites") {
-                matchesCategory = favorite;
-            }
-
-            else if (activeCategory !== "all") {
-                matchesCategory = category === activeCategory;
-            }
-
-            if (
-                matchesSearch
-                && matchesSector
-                && matchesCategory
-            ) {
-
-                card.style.display = "block";
-
-                visibleCount++;
-
-            } else {
-
-                card.style.display = "none";
-            }
-        });
-
-        emptyMessage.style.display =
-            visibleCount === 0
-            ? "block"
-            : "none";
-    }
-
-    function updateSummary() {
-
-        let selectedProducts = 0;
-
-        let units = 0;
-
-        let total = 0;
-
-        let html = "";
-
-        productCards.forEach(card => {
-
-            const input = card.querySelector(".quantity-input");
-
-            const quantity = parseInt(input.value || "0");
-
-            const price = parseFloat(input.dataset.price);
-
-            const name = input.dataset.name;
-
-            if (quantity > 0) {
-
-                card.classList.add("selected");
-
-                selectedProducts++;
-
-                units += quantity;
-
-                total += quantity * price;
-
-                html += `
-                    <div class="summary-line">
-                        <span>${quantity}x ${name}</span>
-                        <strong>$${formatCLP(quantity * price)}</strong>
-                    </div>
-                `;
-
-            } else {
-
-                card.classList.remove("selected");
-            }
-
-        });
-
-        selectedCount.textContent = selectedProducts;
-
-        totalUnits.textContent = units;
-
-        totalAmount.textContent = formatCLP(total);
-
-        if (selectedProducts === 0) {
-
-            selectedProductsList.innerHTML = `
-                <div class="summary-line">
-                    <span>Sin productos</span>
-                </div>
-            `;
-
-            submitButton.disabled = true;
-
-            submitButton.textContent = "Selecciona productos";
-
-        } else {
-
-            selectedProductsList.innerHTML = html;
-
-            submitButton.disabled = false;
-
-            submitButton.textContent = "Crear Pedido";
-        }
-    }
-
-    productCards.forEach(card => {
-
-        const input = card.querySelector(".quantity-input");
-
-        const plusBtn = card.querySelector(".plus-btn");
-
-        const minusBtn = card.querySelector(".minus-btn");
-
-        plusBtn.addEventListener("click", () => {
-
-            input.value = parseInt(input.value || "0") + 1;
-
-            updateSummary();
-        });
-
-        minusBtn.addEventListener("click", () => {
-
-            let current = parseInt(input.value || "0");
-
-            if (current > 0) {
-                input.value = current - 1;
-            }
-
-            updateSummary();
-        });
-
-        input.addEventListener("input", updateSummary);
-
-    });
-
-    categoryButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            categoryButtons.forEach(btn => {
-                btn.classList.remove("active");
-            });
-
-            button.classList.add("active");
-
-            activeCategory = button.dataset.category;
-
-            filterProducts();
-        });
-    });
-
-    searchInput.addEventListener("input", filterProducts);
-
-    sectorFilter.addEventListener("change", filterProducts);
-
-</script>
+<script src="{% static 'kitchen/js/pos.js' %}"></script>
 
 </body>
 </html>
