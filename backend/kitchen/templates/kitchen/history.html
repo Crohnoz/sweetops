@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial - {{ sector }}</title>
+    <style>
+        body { margin: 0; background: #111; color: white; font-family: Arial, sans-serif; }
+        header { padding: 24px 32px; background: #1f1f1f; border-bottom: 1px solid #333; }
+        h1 { margin: 0; color: #ffd84d; }
+        main { padding: 32px; display: grid; gap: 16px; }
+        .ticket { background: #202020; border-radius: 16px; padding: 20px; border-left: 10px solid #6b7280; }
+        .delivered { border-left-color: #22c55e; }
+        .cancelled { border-left-color: #ef4444; }
+        .back { background: #374151; color: white; padding: 10px 14px; border-radius: 10px; text-decoration: none; display: inline-block; margin-top: 12px; }
+        .items { font-size: 18px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Historial: {{ sector|upper }}</h1>
+        <a class="back" href="/kitchen/sector/{{ sector }}/">Volver al sector</a>
+        <a class="back" href="/kitchen/">Panel</a>
+    </header>
+
+    <main>
+        {% for ticket in tickets %}
+            <section class="ticket {{ ticket.status }}">
+                <h2>Pedido #{{ ticket.order.id }}</h2>
+                <p>Estado: <strong>{{ ticket.get_status_display }}</strong></p>
+                <p>Creado: {{ ticket.created_at }}</p>
+
+                <div class="items">
+                    {% for item in ticket.order.items.all %}
+                        {% if item.sector_snapshot == sector %}
+                            <div>{{ item.quantity }}x {{ item.product.name }}</div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% empty %}
+            <h2>No hay historial para este sector.</h2>
+        {% endfor %}
+    </main>
+</body>
+</html>

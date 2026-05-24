@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="20">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SweetOps - Panel Operativo</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(255,216,77,0.12), transparent 35%),
+                linear-gradient(135deg, #160f12, #2b1418);
+            color: white;
+        }
+
+        header {
+            padding: 32px 48px;
+            background: rgba(0, 0, 0, 0.35);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(8px);
+        }
+
+        h1 {
+            margin: 0;
+            color: #ffd84d;
+            font-size: 48px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            color: #ddd;
+            font-size: 18px;
+        }
+
+        .topbar {
+            margin-top: 18px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .topbar a {
+            text-decoration: none;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 12px;
+            transition: 0.2s ease;
+            font-size: 14px;
+        }
+
+        .topbar a:hover {
+            background: rgba(255,255,255,0.14);
+        }
+
+        main {
+            padding: 48px;
+        }
+
+        .section-title {
+            font-size: 30px;
+            margin-bottom: 28px;
+            color: #fff;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            min-height: 240px;
+            border-radius: 24px;
+            padding: 28px;
+            text-decoration: none;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,255,255,0.12);
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                border 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            top: -50px;
+            right: -50px;
+        }
+
+        .card h2 {
+            font-size: 34px;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card p {
+            position: relative;
+            z-index: 2;
+            color: #f0f0f0;
+            max-width: 260px;
+            margin-top: 16px;
+            line-height: 1.5;
+            font-size: 16px;
+        }
+
+        .counter {
+            position: relative;
+            z-index: 2;
+            margin-top: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.25);
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .counter-number {
+            font-size: 26px;
+            color: #ffd84d;
+        }
+
+        .emoji {
+            position: absolute;
+            right: 24px;
+            bottom: 16px;
+            font-size: 82px;
+            opacity: 0.22;
+            z-index: 1;
+        }
+
+        .new-order {
+            background: linear-gradient(135deg, #14532d, #22c55e);
+        }
+
+        .cafeteria {
+            background: linear-gradient(135deg, #5b2c18, #c47a35);
+        }
+
+        .vitrina {
+            background: linear-gradient(135deg, #5b1437, #d9468f);
+        }
+
+        .display {
+            background: linear-gradient(135deg, #1f3a5f, #38bdf8);
+        }
+
+        .admin {
+            background: linear-gradient(135deg, #1f2937, #64748b);
+        }
+
+        .footer {
+            margin-top: 48px;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 24px;
+            }
+
+            main {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 38px;
+            }
+
+            .card {
+                min-height: 220px;
+            }
+
+            .card h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>SweetOps</h1>
+
+        <div class="subtitle">
+            Centro operativo ISIS Cakes
+        </div>
+
+        <div class="topbar">
+            <a href="/kitchen/create-order/">Nueva Orden</a>
+            <a href="/admin/">Admin</a>
+            <a href="/kitchen/sector/cafeteria/">Cafetería</a>
+            <a href="/kitchen/sector/vitrina/">Vitrina</a>
+            <a href="/kitchen/sector/display/">Display</a>
+        </div>
+    </header>
+
+    <main>
+
+        <div class="section-title">
+            Panel de Producción
+        </div>
+
+        <div class="grid">
+
+            <a class="card new-order" href="/kitchen/create-order/">
+                <h2>Nueva Orden</h2>
+
+                <p>
+                    Crear pedido rápido desde caja o mesón.
+                </p>
+
+                <div class="counter">
+                    <span class="counter-number">
+                        +
+                    </span>
+
+                    <span>
+                        crear pedido
+                    </span>
+                </div>
+
+                <div class="emoji">🧾</div>
+            </a>
+
+            <a class="card cafeteria" href="/kitchen/sector/cafeteria/">
+                <h2>Cafetería</h2>
+
+                <p>
+                    Bebidas calientes, cafés, frappes, jugos y milkshakes.
+                </p>
+
+                <div class="counter">
+                    <span class="counter-number">
+                        {{ counts.cafeteria }}
+                    </span>
+
+                    <span>
+                        comandas activas
+                    </span>
+                </div>
+
+                <div class="emoji">☕</div>
+            </a>
+
+            <a class="card vitrina" href="/kitchen/sector/vitrina/">
+                <h2>Vitrina</h2>
+
+                <p>
+                    Productos listos para despacho y venta directa.
+                </p>
+
+                <div class="counter">
+                    <span class="counter-number">
+                        {{ counts.vitrina }}
+                    </span>
+
+                    <span>
+                        comandas activas
+                    </span>
+                </div>
+
+                <div class="emoji">🧁</div>
+            </a>
+
+            <a class="card display" href="/kitchen/sector/display/">
+                <h2>Display</h2>
+
+                <p>
+                    Postres, waffles, helados y productos destacados.
+                </p>
+
+                <div class="counter">
+                    <span class="counter-number">
+                        {{ counts.display }}
+                    </span>
+
+                    <span>
+                        comandas activas
+                    </span>
+                </div>
+
+                <div class="emoji">🍰</div>
+            </a>
+
+            <a class="card admin" href="/admin/">
+                <h2>Admin</h2>
+
+                <p>
+                    Gestión de productos, órdenes, stock y comandas.
+                </p>
+
+                <div class="counter">
+                    <span class="counter-number">
+                        ⚙️
+                    </span>
+
+                    <span>
+                        panel administrativo
+                    </span>
+                </div>
+
+                <div class="emoji">🛠️</div>
+            </a>
+
+        </div>
+
+        <div class="footer">
+            SweetOps · Sistema operativo interno ISIS Cakes
+        </div>
+
+    </main>
+
+</body>
+</html>

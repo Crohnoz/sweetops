@@ -3,23 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title>SweetOps - {{ sector }}</title>
+    <meta http-equiv="refresh" content="20">
+    <style>
+        body { margin: 0; background: #111; color: white; font-family: Arial, sans-serif; }
+        header { padding: 24px 32px; background: #1f1f1f; border-bottom: 1px solid #333; }
+        h1 { margin: 0; color: #ffd84d; }
+        main { padding: 32px; display: grid; gap: 20px; }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .ticket { background: #202020; border-radius: 18px; padding: 24px; border-left: 12px solid #777; }
+        .pending { border-left-color: #f59e0b; }
+        .in_progress { border-left-color: #38bdf8; }
+        .ready { border-left-color: #22c55e; }
+
+        .ticket h2 { margin-top: 0; font-size: 28px; }
+        .status { font-weight: bold; margin-bottom: 16px; }
+        .items { font-size: 22px; line-height: 1.7; }
+        .actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+
+        button, .back {
+            border: none;
+            border-radius: 10px;
+            padding: 14px 18px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .progress { background: #2563eb; }
+        .ready-btn { background: #16a34a; }
+        .delivered { background: #6b7280; }
+        .back { background: #374151; display: inline-block; }
+        .history { background: #7c3aed; display: inline-block; }
+
+        .empty { font-size: 26px; color: #ccc; }
+
+        .meta {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Sector: {{ sector }}</h1>
+    <header>
+        <h1>Sector: {{ sector|upper }}</h1>
 
-    {% for ticket in tickets %}
-        <h2>Pedido #{{ ticket.order.id }}</h2>
-        <p>Estado: {{ ticket.get_status_display }}</p>
+        <div class="header-actions">
+            <a class="back" href="/kitchen/">Volver al panel</a>
+            <a class="history" href="/kitchen/sector/{{ sector }}/history/">Ver historial</a>
+        </div>
+    </header>
 
-        <ul>
-            {% for item in ticket.order.items.all %}
-                {% if item.sector_snapshot == sector %}
-                    <li>{{ item.quantity }} x {{ item.product.name }}</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    {% empty %}
-        <p>No hay comandas.</p>
-    {% endfor %}
+    <main>
+        {% for ticket in tickets %}
+            <section class="ticket {{ ticket.status }}">
+                <h2>Pedido #{{ ticket.order.id }}</h2>
+
+                <div class="status">
+                    Estado: {{ ticket.get_status_display }}
+                </div>
+
+                <div class="meta">
+                    Creado: {{ ticket.created_at }}
+                </div>
+
+                <div class="items">
+                    {% for item in ticket.order.items.all %}
+                        {% if item.sector_snapshot == sector %}
+                            <div>{{ item.quantity }}x {{ item.product.name }}</div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="actions">
+                    <form method="post" action="/kitchen/ticket/{{ ticket.id }}/status/">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="in_progress">
+                        <button class="progress" type="submit">En preparación</button>
+                    </form>
+
+                    <form method="post" action="/kitchen/ticket/{{ ticket.id }}/status/">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="ready">
+                        <button class="ready-btn" type="submit">Listo</button>
+                    </form>
+
+                    <form method="post" action="/kitchen/ticket/{{ ticket.id }}/status/">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="delivered">
+                        <button class="delivered" type="submit">Entregado</button>
+                    </form>
+                </div>
+            </section>
+        {% empty %}
+            <p class="empty">No hay comandas activas para este sector.</p>
+        {% endfor %}
+    </main>
 </body>
 </html>
